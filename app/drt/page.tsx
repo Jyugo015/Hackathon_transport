@@ -1,10 +1,10 @@
-const PageOne = () => {
+const Page = () => {
   return (
     <div>
-      <h1>Page Three</h1>
-      <p>This is the content for Page Three.</p>
+      <h1>DRT Page</h1>
+      <p className="h-screen">This is the content for DRT Page.</p>
     </div>
   );
 };
 
-export default PageOne;
+export default Page;
