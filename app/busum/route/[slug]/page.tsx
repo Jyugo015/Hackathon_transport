@@ -94,7 +94,7 @@ const RoutePage = () => {
           alt={`${route.name} map`}
           width={800}
           height={400}
-          className="rounded-lg shadow-md"
+          className="rounded-lg shadow-md w-[600]"
         />
       </div>
 
