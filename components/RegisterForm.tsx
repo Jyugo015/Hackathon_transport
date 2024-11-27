@@ -20,6 +20,7 @@ const RegisterForm: React.FC = () => {
       return;
     }
 
+    //testing
     // try {
     //   const resUserExists = await fetch("api/userExists", {
     //     method: "POST",
