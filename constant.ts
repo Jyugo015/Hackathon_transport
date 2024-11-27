@@ -30,6 +30,36 @@ export const MENU_ITEMS: MenuItem[] = [
   { name: "DRT", link: "/drt" },
 ];
 
+export const footerLinks = [
+  {
+    title: "About",
+    links: [
+      { title: "Grabbit Ride", url: "/grabbit_ride" },
+      { title: "UM Bus", url: "/busum" },
+      { title: "RapidBus", url: "/rapidbus" },
+      { title: "DRT", url: "/drt" },
+    ],
+  },
+  {
+    title: "Company",
+    links: [
+      { title: "Events", url: "/" },
+      { title: "Blog", url: "/" },
+      { title: "Podcast", url: "/" },
+      { title: "Invite a friend", url: "/" },
+    ],
+  },
+  {
+    title: "Socials",
+    links: [
+      { title: "LinkedIn", url: "#" },
+      { title: "Twitter", url: "#" },
+      { title: "GitHub", url: "#" },
+      { title: "Portfolio", url: "#" },
+    ],
+  },
+];
+
 export type BusRoute = {
   name: string;
   mapUrl: string;
