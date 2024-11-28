@@ -18,7 +18,7 @@ const DropDownMenu = ({
           <li key={index}>
             <Link
               href={item.link}
-              className="flex items-center regular-16 text-[#999999] w-full bg-white px-4 py-2 transition duration-200 hover:bg-zinc-100/60 focus:bg-zinc-100/60 active:bg-zinc-300/60 active:text-black hover:text-black"
+              className="flex items-center regular-16 text-[#999999] w-full bg-white px-4 py-2 transition duration-200 hover:bg-zinc-100 focus:bg-zinc-100 active:bg-zinc-300 active:text-black hover:text-black"
             >
               {item.name}
             </Link>
