@@ -136,7 +136,7 @@ const Navbar = ({ menuItems }: NavbarProps) => {
             >
               <Link
                 href={item.link}
-                className="text-blue-600 hover:text-blue-800 hover:bg-white/50 px-2 py-7"
+                className="text-xl font-bold text-blue-600 hover:text-blue-800 hover:bg-white/50 px-4 py-6 mr-2"
               >
                 {item.name}
               </Link>
