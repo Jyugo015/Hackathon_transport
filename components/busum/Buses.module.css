@@ -1,0 +1,43 @@
+.parallaxBackground {
+  background-image: url("/images/hero/carousel/carousel-2.jpg");
+  min-height: 100vh;
+  background-attachment: fixed;
+  background-position: 0% 0%;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.grid {
+  z-index: 2;
+}
+
+.parallaxBackground::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+}
+
+#body-container {
+  scroll-behavior: smooth;
+}
+
+.parallaxBackground {
+  animation: moveBg 20s linear infinite;
+}
+
+@keyframes moveBg {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 100% 0%;
+  }
+}
+
+.shadow {
+  box-shadow: inset 0 -2px 4px rgba(0, 0, 0, 0.6);
+}
