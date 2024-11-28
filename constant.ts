@@ -60,11 +60,29 @@ export const footerLinks = [
   },
 ];
 
-export const HERO_ITEMS = [
-  "/images/hero/carousel/carousel-1.jpeg",
-  "/images/hero/carousel/carousel-2.jpg",
-  "/images/hero/carousel/carousel-3.jpg",
-  "/images/hero/carousel/carousel-4.jpg",
+export type HeroItem = {
+  img: string;
+  path: string;
+  title: string;
+};
+
+export const HERO_ITEMS: HeroItem[] = [
+  {
+    img: "/images/hero/carousel/carousel-1.jpeg",
+    path: "/grabbit_ride",
+    title: "Grabbit Ride",
+  },
+  {
+    img: "/images/hero/carousel/carousel-2.jpg",
+    path: "/busum",
+    title: "BusUM",
+  },
+  {
+    img: "/images/hero/carousel/carousel-3.jpg",
+    path: "/rapidbus",
+    title: "RapidBus",
+  },
+  { img: "/images/hero/carousel/carousel-4.jpg", path: "/drt", title: "DRT" },
 ];
 
 export type BusRoute = {

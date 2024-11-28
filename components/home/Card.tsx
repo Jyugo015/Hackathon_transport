@@ -3,7 +3,7 @@ import { FaCar, FaBus } from "react-icons/fa";
 import Link from "next/link";
 export default function Hero() {
   return (
-    <div className="min-h-screen bg-blue-100 w-full">
+    <div className="min-h-screen bg-blue-100">
       {/* 背景部分 */}
       <section className="w-full h-64">
         {/* <Image
@@ -23,7 +23,7 @@ export default function Hero() {
       <div className="bg-blue-100 p-0">
         <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Grabbit Ride 卡片 */}
-          <div className="bg-white p-6 rounded-md shadow-md">
+          <div className="bg-white p-6 rounded-md shadow-md hover:scale-105 transition ease-in-out delay-150">
             <FaCar className="text-blue-400 w-12 h-12 mx-auto" />
             <h3 className="font-bold text-xl mt-4">GRABBIT RIDE</h3>
             <p className="text-gray-600 mt-2">
@@ -37,7 +37,7 @@ export default function Hero() {
             </Link>
           </div>
 
-          <div className="bg-white p-6 rounded-md shadow-md">
+          <div className="bg-white p-6 rounded-md shadow-md hover:scale-105 transition ease-in-out delay-150">
             <FaBus className="text-blue-400 w-12 h-12 mx-auto" />
             <h3 className="font-bold text-xl mt-4">BusScout</h3>
             <p className="text-gray-600 mt-2">
