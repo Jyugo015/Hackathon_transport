@@ -46,20 +46,13 @@ export const footerLinks = [
   },
   {
     title: "Company",
-    links: [
-      { title: "Events", url: "/" },
-      { title: "Blog", url: "/" },
-      { title: "Podcast", url: "/" },
-      { title: "Invite a friend", url: "/" },
-    ],
+    links: [{ title: "Acknowledgement", url: "/acknowledgement" }],
   },
   {
-    title: "Socials",
+    title: "Collaborators",
     links: [
-      { title: "LinkedIn", url: "#" },
-      { title: "Twitter", url: "#" },
-      { title: "GitHub", url: "#" },
-      { title: "Portfolio", url: "#" },
+      { title: "UM", url: "https://jpphb.um.edu.my/transport" },
+      { title: "RapidKL", url: "https://myrapid.com.my/" },
     ],
   },
 ];
@@ -448,3 +441,43 @@ export const RAPID_BUSES: RapidBuses = {
     ],
   },
 };
+
+export type Acknowledgement = {
+  name: string;
+  position: string;
+  imgSrc: string;
+  autobiography: string;
+};
+
+export const BIOGRAPHIES: Acknowledgement[] = [
+  {
+    name: "HZW",
+    position: "Developer",
+    imgSrc: "/images/ack/img_1.jpg",
+    autobiography: "Keep Going",
+  },
+  {
+    name: "Jyugo",
+    position: "Developer",
+    imgSrc: "/images/ack/img_2.jpg",
+    autobiography: "科技造福懒人🌚",
+  },
+  {
+    name: "JQ",
+    position: "Database Developer",
+    imgSrc: "/images/ack/img_3.jpg",
+    autobiography: "要什么避风港，钞票才是梦想",
+  },
+  {
+    name: "Janice",
+    position: "UI Designer",
+    imgSrc: "/images/ack/img_4.jpg",
+    autobiography: "A journey of a thousand miles begins with a single step.",
+  },
+  {
+    name: "Yee Ming",
+    position: "UI Designer",
+    imgSrc: "/images/ack/img_5.jpg",
+    autobiography: "Miracles happen every day.",
+  },
+];
