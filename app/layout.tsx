@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import Header from "@/components/navbar/Header";
 import Navbar from "@/components/navbar/Navbar";
 import Footer from "@/components/Footer";
 import { MENU_ITEMS } from "@/constant";
@@ -31,6 +32,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <Header />
         <Navbar menuItems={MENU_ITEMS} />
         {children}
         <Footer />
