@@ -132,6 +132,25 @@ export const CARD_ITEMS: CardItem[] = [
   },
 ];
 
+export type Bus = {
+  name: string;
+  link: string;
+}[];
+
+export const UM_BUSES: Bus = [
+  { name: "Route AB", link: "/" },
+  { name: "Route BA", link: "/busum/route/route-ba" },
+  { name: "Route C", link: "/busum/route/route-c" },
+  { name: "Route College 13", link: "/busum/route/route-college-13" },
+  { name: "Route D", link: "/busum/route/route-d" },
+  { name: "Route E", link: "/busum/route/route-e" },
+];
+
+export const RAPID_KL_BUSES: Bus = [
+  { name: "T815", link: "/rapidbus/t815" },
+  { name: "T789", link: "/rapidbus/t789" },
+];
+
 export type BusRoute = {
   name: string;
   mapUrl: string;

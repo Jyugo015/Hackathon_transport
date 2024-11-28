@@ -24,6 +24,8 @@
 // export default Page;
 import { BUS_ROUTES } from "@/constant";
 import Buses from "@/components/busum/Buses";
+import ButtonList from "@/components/ButtonList";
+import { UM_BUSES } from "@/constant";
 
 const Page = () => {
   return (
@@ -32,16 +34,10 @@ const Page = () => {
       <div>
         <Buses />
       </div>
-
-      {/* Title Section */}
       <div className="text-center">
-        <h1 className="text-3xl font-bold mb-4">Bus UM Information</h1>
-        <p className="text-lg text-gray-700">
-          Learn about the University Malaya (UM) bus service, including
-          operational details, contact information, and service limitations.
-        </p>
+        <h1 className="text-3xl font-bold mb-4">Shuttle Bus in UM</h1>
+        <ButtonList buttonItems={UM_BUSES} />
       </div>
-
       {/* Important Notes */}
       <div className="bg-yellow-50 p-6 border-l-4 border-yellow-400 rounded-md shadow-sm">
         <h2 className="text-xl font-semibold mb-2 text-yellow-600">
@@ -58,6 +54,15 @@ const Page = () => {
             Friday prayers break: <strong>12:30 PM - 2:30 PM</strong>.
           </li>
         </ul>
+      </div>
+
+      {/* Title Section */}
+      <div className="text-center">
+        <h1 className="text-3xl font-bold mb-4">Bus UM Information</h1>
+        <p className="text-lg text-gray-700">
+          Learn about the University Malaya (UM) bus service, including
+          operational details, contact information, and service limitations.
+        </p>
       </div>
 
       {/* Contact Information */}

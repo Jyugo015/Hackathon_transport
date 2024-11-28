@@ -32,7 +32,7 @@ const Slider = () => {
 
   // Handle click to navigate to the path
   const handleImageClick = (path: string) => {
-    router.push(path); // Navigate to the path specified in the HERO_ITEMS
+    router.push(path);
   };
 
   return (
