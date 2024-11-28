@@ -92,9 +92,9 @@ const RoutePage = () => {
         <Image
           src={route.mapUrl}
           alt={`${route.name} map`}
-          width={800}
+          width={500}
           height={400}
-          className="rounded-lg shadow-md w-[600]"
+          className="rounded-lg shadow-md"
         />
       </div>
 
