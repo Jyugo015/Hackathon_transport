@@ -1,8 +1,10 @@
-import Hero from "@/components/home/Hero";
+import Card from "@/components/home/Card";
+import Slider from "@/components/home/Slider";
 export default function Home() {
   return (
     <div>
-      <Hero />
+      <Slider />
+      <Card />
     </div>
   );
 }
