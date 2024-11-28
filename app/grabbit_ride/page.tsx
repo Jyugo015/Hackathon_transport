@@ -15,16 +15,16 @@ import { useState } from "react";
 export default function Page() {
   const locations = ["Library", "Hostel", "Cafeteria", "Main Gate", "Lab"];
   const drivers = [
-    { id: 1, name: "Driver A", available: true, car: 4, phone: "012-3456789" },
-    { id: 2, name: "Driver B", available: true, car: 6, phone: "013-9876543" },
-    { id: 3, name: "Driver C", available: true, car: 4, phone: "014-5678910" },
+    { id: 1, name: "Driver A", available: true, car: 4, phone: "012-3456789", telegram: "lyw015018" },
+    { id: 2, name: "Driver B", available: true, car: 6, phone: "013-9876543", telegram: "lyw015018" },
+    { id: 3, name: "Driver C", available: true, car: 4, phone: "014-5678910", telegram: "lyw015018" },
   ];
 
   const [pickUp, setPickUp] = useState<string>("");
   const [destination, setDestination] = useState<string>("");
   const [passengers, setPassengers] = useState<number>(1);
   const [fee, setFee] = useState<number | null>(null);
-  const [availableDriver, setAvailableDriver] = useState<{ name: string; phone: string } | null>(null);
+  const [availableDriver, setAvailableDriver] = useState<{ name: string; phone: string; telegram: string } | null>(null);
   const [errorMessage, setErrorMessage] = useState<string>("");
 
   const distanceMatrix: Record<string, Record<string, number>> = {
@@ -47,7 +47,7 @@ export default function Page() {
   const findDriver = () => {
     const driver = drivers.find((d) => d.available && d.car >= passengers);
     if (driver) {
-      setAvailableDriver({ name: driver.name, phone: driver.phone });
+      setAvailableDriver({ name: driver.name, phone: driver.phone, telegram: driver.telegram });
       driver.available = false; // Mark the driver as unavailable after the request
     } else {
       setAvailableDriver(null);
@@ -176,20 +176,39 @@ export default function Page() {
 
       {/* Results Section */}
       <div style={{ marginTop: "20px" }}>
-        {fee !== null && (
-          <p style={{ fontSize: "16px", margin: "10px 0" }}>
-            <strong>Estimated Fee:</strong> RM {fee.toFixed(2)}
-          </p>
-        )}
-        {availableDriver ? (
-          <p style={{ fontSize: "16px", margin: "10px 0" }}>
-            <strong>Available Driver:</strong> {availableDriver.name} <br />
-            <strong>Phone:</strong> {availableDriver.phone}
-          </p>
+      {fee !== null && (
+        <p style={{ fontSize: "16px", margin: "10px 0" }}>
+        <strong>Estimated Fee:</strong> RM {fee.toFixed(2)}
+        </p>
+      )}
+      {availableDriver ? (
+      <div style={{ fontSize: "16px", margin: "10px 0" }}>
+        <p>
+          <strong>Available Driver:</strong> {availableDriver.name} <br />
+          <strong>Phone:</strong> {availableDriver.phone}
+        </p>
+        <a
+          href={`https://t.me/${availableDriver.telegram}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            display: "inline-block",
+            padding: "10px 20px",
+            backgroundColor: "#0088cc",
+            color: "#fff",
+            textDecoration: "none",
+            borderRadius: "5px",
+            marginTop: "10px",
+          }}
+        >
+          Chat on Telegram
+        </a>
+      </div>
         ) : (
           !errorMessage && <p style={{ fontSize: "16px", margin: "10px 0" }}>No drivers available</p>
         )}
       </div>
+
     </div>
   );
 }
