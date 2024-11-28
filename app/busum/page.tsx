@@ -1,8 +1,11 @@
+import { BUS_ROUTES } from "@/constant";
+
 const Page = () => {
   return (
     <div className="h-screen p-6">
       <h1>Bus UM Page</h1>
       <p>This is the content for Bus UM Page.</p>
+      
       <ul className="list-disc">
         Bus does not operate on the following days and times:
         <li>Weekend (Saturday & Sunday)</li>

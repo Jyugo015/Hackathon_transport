@@ -3,22 +3,21 @@ import { FaCar, FaBus } from "react-icons/fa";
 import Link from "next/link";
 export default function Hero() {
   return (
-    <div className="min-h-screen bg-blue-100">
-      This is main page
+    <div className="min-h-screen bg-blue-100 w-full">
       {/* 背景部分 */}
       <section className="w-full h-64">
-        <Image
+        {/* <Image
           src="/road.png"
           alt="Road"
           width={1600}
           height={100}
           style={{ objectFit: "cover" }}
-        />
-        <div className="absolute inset-20 flex place-items-start justify-center">
+        /> */}
+        {/* <div className="absolute inset-20 flex place-items-start justify-center">
           <h2 className="mt-20 text-white text-3xl font-bold bg-black bg-opacity-50 p-4 rounded-md">
             When in doubt, just Grabbit and go!
           </h2>
-        </div>
+        </div> */}
       </section>
       {/* 卡片部分 */}
       <div className="bg-blue-100 p-0">
