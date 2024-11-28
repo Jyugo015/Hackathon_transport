@@ -85,10 +85,10 @@ const Footer = () => {
       <div className="border-t border-gray-100 sm:px-16 px-6 py-10">
         <p className="text-center">@2024 Grabbit. Build By Java.util.random</p>
         <div className="text-center mt-4">
-          <Link href="/" className="text-gray-500 mx-2">
+          <Link href="#" className="text-gray-500 mx-2">
             Privacy & Policy
           </Link>
-          <Link href="/" className="text-gray-500 mx-2">
+          <Link href="#" className="text-gray-500 mx-2">
             Terms & Condition
           </Link>
         </div>
