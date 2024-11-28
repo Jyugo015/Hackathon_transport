@@ -18,7 +18,7 @@ const BusPage = () => {
 
   return (
     <div className="p-6 h-full">
-      <h1 className="text-3xl font-bold mb-4">{route.name}</h1>
+      <h1 className="text-3xl font-bold mb-4 text-center">{route.name}</h1>
       <div className="h-screen">
         <TrackBus urlPath={route.urlPath} />
       </div>

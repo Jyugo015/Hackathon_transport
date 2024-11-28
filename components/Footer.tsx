@@ -59,12 +59,12 @@ const Footer = () => {
     <footer className="relative text-black-100 mt-5 border-t border-gray-100 bg-white">
       <div className="sm:px-16 px-6 py-10">
         <p className="text-base text-gray-700">
-          Carhub 2023 <br />
+          RideHub 2024 <br />
           All Rights Reserved &copy;
         </p>
 
         {/* Footer Links Section */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 mb-10">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 my-10">
           {footerLinks.map((item) => (
             <div key={item.title}>
               <h3 className="font-bold mb-3">{item.title}</h3>
@@ -83,7 +83,7 @@ const Footer = () => {
       </div>
 
       <div className="border-t border-gray-100 sm:px-16 px-6 py-10">
-        <p className="text-center">@2024 Grabbit. Build By XXX</p>
+        <p className="text-center">@2024 Grabbit. Build By Java.util.random</p>
         <div className="text-center mt-4">
           <Link href="/" className="text-gray-500 mx-2">
             Privacy & Policy

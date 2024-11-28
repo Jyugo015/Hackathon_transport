@@ -1,3 +1,7 @@
+import { IconType } from "react-icons";
+import { FaCar, FaBus } from "react-icons/fa";
+import { FaBusAlt } from "react-icons/fa";
+import { FaShuttleVan } from "react-icons/fa";
 export type MenuItem = {
   name: string;
   link: string;
@@ -83,6 +87,68 @@ export const HERO_ITEMS: HeroItem[] = [
     title: "RapidBus",
   },
   { img: "/images/hero/carousel/carousel-4.jpg", path: "/drt", title: "DRT" },
+];
+
+export type CardItem = {
+  title: string;
+  description: string;
+  icon: IconType;
+  buttonTitle: string;
+  path: string;
+};
+
+export const CARD_ITEMS: CardItem[] = [
+  {
+    title: "GRABBIT RIDE",
+    description:
+      "Experience fast, reliable, and budget-friendly rides tailored for you!",
+    icon: FaCar,
+    buttonTitle: "Choose Ride",
+    path: "/grabbit_ride",
+  },
+  {
+    title: "BUS UM",
+    description:
+      "Stay on schedule with real-time bus tracking for University Malaya.",
+    icon: FaBus,
+    buttonTitle: "View Buses",
+    path: "/busum",
+  },
+  {
+    title: "RAPID KL BUS",
+    description:
+      "Navigate the city effortlessly with live updates on bus routes and schedules.",
+    icon: FaBusAlt,
+    buttonTitle: "Track Buses",
+    path: "/rapidbus",
+  },
+  {
+    title: "DRT",
+    description:
+      "Plan your journey and travel in comfort with our van booking services.",
+    icon: FaShuttleVan,
+    buttonTitle: "Book A Van",
+    path: "/drt",
+  },
+];
+
+export type Bus = {
+  name: string;
+  link: string;
+}[];
+
+export const UM_BUSES: Bus = [
+  { name: "Route AB", link: "/" },
+  { name: "Route BA", link: "/busum/route/route-ba" },
+  { name: "Route C", link: "/busum/route/route-c" },
+  { name: "Route College 13", link: "/busum/route/route-college-13" },
+  { name: "Route D", link: "/busum/route/route-d" },
+  { name: "Route E", link: "/busum/route/route-e" },
+];
+
+export const RAPID_KL_BUSES: Bus = [
+  { name: "T815", link: "/rapidbus/t815" },
+  { name: "T789", link: "/rapidbus/t789" },
 ];
 
 export type BusRoute = {
