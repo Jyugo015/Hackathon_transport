@@ -112,7 +112,7 @@ const Navbar = ({ menuItems }: NavbarProps) => {
   };
 
   return (
-    <header className="sticky top-0 bg-blue-100 p-4 shadow-md">
+    <header className="z-50 sticky top-0 bg-blue-100 p-4 shadow-md">
       <nav className="flex justify-between items-center">
         {/* Logo */}
         <div>
