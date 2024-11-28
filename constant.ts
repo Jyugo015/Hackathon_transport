@@ -156,7 +156,7 @@ export type BusRoutes = Record<string, BusRoute>;
 export const BUS_ROUTES: BusRoutes = {
   "route-ab": {
     name: "Route AB",
-    mapUrl: "/images/busum/route-ab-map.jpg",
+    mapUrl: "/images/busum/route-ab-map.png",
     timetable: [
       { time: "7:30 AM" },
       { time: "7:50 AM" },
@@ -193,7 +193,7 @@ export const BUS_ROUTES: BusRoutes = {
   },
   "route-ba": {
     name: "Route BA",
-    mapUrl: "/images/busum/route-ba-map.jpg",
+    mapUrl: "/images/busum/route-ba-map.png",
     timetable: [
       { time: "7:30 AM" },
       { time: "7:50 AM" },
@@ -229,7 +229,7 @@ export const BUS_ROUTES: BusRoutes = {
   },
   "route-c": {
     name: "Route C",
-    mapUrl: "/images/busum/route-c-map.jpg",
+    mapUrl: "/images/busum/route-c-map.png",
     timetable: [
       { time: "7:30 AM" },
       { time: "8:00 AM" },
@@ -259,7 +259,7 @@ export const BUS_ROUTES: BusRoutes = {
   },
   "route-college-13": {
     name: "Route College 13",
-    mapUrl: "/images/busum/route-college-13-map.jpg",
+    mapUrl: "/images/busum/route-college-13-map.png",
     timetable: [{ time: "7:30 AM" }, { time: "8:00 AM" }],
     busStop: [
       { name: "Um Central" },
@@ -273,7 +273,7 @@ export const BUS_ROUTES: BusRoutes = {
   },
   "route-d": {
     name: "Route D",
-    mapUrl: "/images/busum/route-d-map.jpg",
+    mapUrl: "/images/busum/route-d-map.png",
     timetable: [
       { time: "7:30 AM" },
       { time: "8:00 AM" },
@@ -306,7 +306,7 @@ export const BUS_ROUTES: BusRoutes = {
   },
   "route-e": {
     name: "Route E",
-    mapUrl: "/images/busum/route-e-map.jpg",
+    mapUrl: "/images/busum/route-e-map.png",
     timetable: [{ time: "7:30 AM" }, { time: "8:00 AM" }],
     busStop: [
       { name: "Um Central" },
