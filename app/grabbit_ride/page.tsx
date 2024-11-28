@@ -10,7 +10,7 @@
 // };
 
 // export default Page;
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Page() {
   const locations = ["Library", "Hostel", "Cafeteria", "Main Gate", "Lab"];
@@ -26,23 +26,73 @@ export default function Page() {
   const [fee, setFee] = useState<number | null>(null);
   const [availableDriver, setAvailableDriver] = useState<{ name: string; phone: string; telegram: string } | null>(null);
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const [shortestPaths, setShortestPaths] = useState<number[][] | null>(null); // State for shortest paths
+  const [distance, setDistance] = useState<number | 0>(0);  // State for storing the distance
 
-  const distanceMatrix: Record<string, Record<string, number>> = {
-    Library: { Hostel: 2, Cafeteria: 1.5, "Main Gate": 3, Lab: 2.5 },
-    Hostel: { Library: 2, Cafeteria: 1, "Main Gate": 2.5, Lab: 3 },
-    Cafeteria: { Hostel: 1, Library: 1.5, "Main Gate": 2, Lab: 1.2 },
-    "Main Gate": { Hostel: 2.5, Cafeteria: 2, Library: 3, Lab: 0.5 },
-    Lab: { Hostel: 3, Cafeteria: 1.2, Library: 2.5, "Main Gate": 0.5 },
-  };
+  // const distanceMatrix: Record<string, Record<string, number>> = {
+  //   Library: { Hostel: 2, Cafeteria: 1.5, "Main Gate": 3, Lab: 2.5 },
+  //   Hostel: { Library: 2, Cafeteria: 1, "Main Gate": 2.5, Lab: 3 },
+  //   Cafeteria: { Hostel: 1, Library: 1.5, "Main Gate": 2, Lab: 1.2 },
+  //   "Main Gate": { Hostel: 2.5, Cafeteria: 2, Library: 3, Lab: 0.5 },
+  //   Lab: { Hostel: 3, Cafeteria: 1.2, Library: 2.5, "Main Gate": 0.5 },
+  // };
 
-  const calculateFee = () => {
-    const distance = distanceMatrix[pickUp]?.[destination];
-    if (distance !== undefined) {
-      setFee(distance * 1.5); // 1.5 units per km
-    } else {
-      setFee(null);
+    // Graph Representation as an Adjacency Matrix
+  // const locations = ["Library", "Hostel", "Cafeteria", "Main Gate", "Lab"];
+  const graph = [
+    [0, 2, 1.5, 3, 2.5], // Distances from Library
+    [2, 0, 1, 2.5, 3],   // Distances from Hostel
+    [1.5, 1, 0, 2, 1.2], // Distances from Cafeteria
+    [3, 2.5, 2, 0, 0.5], // Distances from Main Gate
+    [2.5, 3, 1.2, 0.5, 0], // Distances from Lab
+  ];
+
+  // useEffect to calculate shortest paths once when component mounts
+  useEffect(() => {
+    const shortestPaths = floydWarshall(graph);
+    setShortestPaths(shortestPaths); // Set the state with the result
+  }, []);
+
+  function floydWarshall(graph: number[][]) {
+    const dist = JSON.parse(JSON.stringify(graph)); // Clone graph to avoid mutation
+    const n = graph.length;
+
+    // Perform the Floyd-Warshall algorithm
+    for (let k = 0; k < n; k++) {
+      for (let i = 0; i < n; i++) {
+        for (let j = 0; j < n; j++) {
+          if (dist[i][k] + dist[k][j] < dist[i][j]) {
+            dist[i][j] = dist[i][k] + dist[k][j];
+          }
+        }
+      }
     }
-  };
+
+    return dist;
+  }
+
+
+  // Utility to fetch the shortest path between locations
+  function getDistance(start: string, end: string): number {
+    if (shortestPaths === null) return 0; // Guard clause if shortestPaths is not available
+    const startIndex = locations.indexOf(start);
+    const endIndex = locations.indexOf(end);
+  
+    if (startIndex === -1 || endIndex === -1) {
+      throw new Error("Invalid location");
+    }
+  
+    return shortestPaths[startIndex][endIndex];
+  }
+
+  // const calculateFee = () => {
+  //   const distance = distanceMatrix[pickUp]?.[destination];
+  //   if (distance !== undefined) {
+  //     setFee(distance * 1.5); // 1.5 units per km
+  //   } else {
+  //     setFee(null);
+  //   }
+  // };
 
   const findDriver = () => {
     const driver = drivers.find((d) => d.available && d.car >= passengers);
@@ -63,7 +113,10 @@ export default function Page() {
         return;
       }
       setErrorMessage(""); // Clear any previous error messages
-      calculateFee();
+      // calculateFee();
+      const calculatedDistance = getDistance(pickUp, destination); // Get the distance between locations
+      setDistance(calculatedDistance); // Set the calculated distance
+      setFee(calculatedDistance * 1.5); // Calculate and set the fee
       findDriver();
     } else {
       setErrorMessage("Please select both pickup and destination locations.");
@@ -177,9 +230,14 @@ export default function Page() {
       {/* Results Section */}
       <div style={{ marginTop: "20px" }}>
       {fee !== null && (
+        <>
         <p style={{ fontSize: "16px", margin: "10px 0" }}>
-        <strong>Estimated Fee:</strong> RM {fee.toFixed(2)}
+          <strong>Distance:</strong> {distance.toFixed(2)} km
         </p>
+        <p style={{ fontSize: "16px", margin: "10px 0" }}>
+          <strong>Estimated Fee:</strong> RM {fee.toFixed(2)}
+        </p>
+      </>
       )}
       {availableDriver ? (
       <div style={{ fontSize: "16px", margin: "10px 0" }}>
