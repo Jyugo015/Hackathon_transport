@@ -17,7 +17,7 @@ app.use(cors(corsOptions)); // Apply CORS middleware
 const db = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: 'ur password',
+  password: 'dbqLb1234!',
   database: 'transportation',
 });
 
