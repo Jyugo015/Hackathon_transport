@@ -104,7 +104,7 @@ export default function Page() {
     }
   };
 
-  const handleRequest = () => {
+  const handleRequest = async () => {
     if (pickUp && destination) {
       if (pickUp === destination) {
         setErrorMessage("Pickup and destination cannot be the same. Please select different locations.");
@@ -118,12 +118,42 @@ export default function Page() {
       setDistance(calculatedDistance); // Set the calculated distance
       setFee(calculatedDistance * 1.5); // Calculate and set the fee
       findDriver();
-    } else {
-      setErrorMessage("Please select both pickup and destination locations.");
-      setFee(null);
-      setAvailableDriver(null);
-    }
-  };
+
+      // Check if availableDriver is null before sending it to the backend
+      const journeyData = {
+        user_id: 1, // You can replace this with the actual user ID
+        pickUp,
+        destination,
+        distance: calculatedDistance,
+        fee: calculatedDistance * 1.5,
+        driver: availableDriver ? availableDriver : null, // Only pass driver data if available
+      };
+
+      // Send the journey data to the backend to save to MySQL
+      try {
+        const response = await fetch('http://localhost:5000/api/save-journey', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(journeyData), // Use the journeyData object to send the data
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+          console.log('Journey saved with ID:', data.journeyId);
+        } else {
+          console.error('Error saving journey:', data.error);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+      } else {
+        setErrorMessage("Please select both pickup and destination locations.");
+        setFee(null);
+        setAvailableDriver(null);
+      }
+    };
 
   return (
     <div style={{ padding: "20px", fontFamily: "Arial", maxWidth: "600px", margin: "auto" }}>
