@@ -22,10 +22,15 @@
 // };
 
 // export default Page;
-import { BUS_ROUTES } from "@/constant";
+
 import Buses from "@/components/busum/Buses";
 import ButtonList from "@/components/ButtonList";
 import { UM_BUSES } from "@/constant";
+import { getPageMetadata } from "@/components/seo/metadataHelper";
+
+export async function generateMetadata() {
+  return getPageMetadata("busum");
+}
 
 const Page = () => {
   return (

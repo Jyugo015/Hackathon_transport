@@ -15,19 +15,44 @@ import { useEffect, useState } from "react";
 export default function Page() {
   const locations = ["Library", "Hostel", "Cafeteria", "Main Gate", "Lab"];
   const drivers = [
-    { id: 1, name: "Driver A", available: true, car: 4, phone: "012-3456789", telegram: "lyw015018" },
-    { id: 2, name: "Driver B", available: true, car: 6, phone: "013-9876543", telegram: "lyw015018" },
-    { id: 3, name: "Driver C", available: true, car: 4, phone: "014-5678910", telegram: "lyw015018" },
+    {
+      id: 1,
+      name: "Driver A",
+      available: true,
+      car: 4,
+      phone: "012-3456789",
+      telegram: "lyw015018",
+    },
+    {
+      id: 2,
+      name: "Driver B",
+      available: true,
+      car: 6,
+      phone: "013-9876543",
+      telegram: "lyw015018",
+    },
+    {
+      id: 3,
+      name: "Driver C",
+      available: true,
+      car: 4,
+      phone: "014-5678910",
+      telegram: "lyw015018",
+    },
   ];
 
   const [pickUp, setPickUp] = useState<string>("");
   const [destination, setDestination] = useState<string>("");
   const [passengers, setPassengers] = useState<number>(1);
   const [fee, setFee] = useState<number | null>(null);
-  const [availableDriver, setAvailableDriver] = useState<{ name: string; phone: string; telegram: string } | null>(null);
+  const [availableDriver, setAvailableDriver] = useState<{
+    name: string;
+    phone: string;
+    telegram: string;
+  } | null>(null);
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [shortestPaths, setShortestPaths] = useState<number[][] | null>(null); // State for shortest paths
-  const [distance, setDistance] = useState<number | 0>(0);  // State for storing the distance
+  const [distance, setDistance] = useState<number | 0>(0); // State for storing the distance
 
   // const distanceMatrix: Record<string, Record<string, number>> = {
   //   Library: { Hostel: 2, Cafeteria: 1.5, "Main Gate": 3, Lab: 2.5 },
@@ -37,11 +62,11 @@ export default function Page() {
   //   Lab: { Hostel: 3, Cafeteria: 1.2, Library: 2.5, "Main Gate": 0.5 },
   // };
 
-    // Graph Representation as an Adjacency Matrix
+  // Graph Representation as an Adjacency Matrix
   // const locations = ["Library", "Hostel", "Cafeteria", "Main Gate", "Lab"];
   const graph = [
     [0, 2, 1.5, 3, 2.5], // Distances from Library
-    [2, 0, 1, 2.5, 3],   // Distances from Hostel
+    [2, 0, 1, 2.5, 3], // Distances from Hostel
     [1.5, 1, 0, 2, 1.2], // Distances from Cafeteria
     [3, 2.5, 2, 0, 0.5], // Distances from Main Gate
     [2.5, 3, 1.2, 0.5, 0], // Distances from Lab
@@ -71,17 +96,16 @@ export default function Page() {
     return dist;
   }
 
-
   // Utility to fetch the shortest path between locations
   function getDistance(start: string, end: string): number {
     if (shortestPaths === null) return 0; // Guard clause if shortestPaths is not available
     const startIndex = locations.indexOf(start);
     const endIndex = locations.indexOf(end);
-  
+
     if (startIndex === -1 || endIndex === -1) {
       throw new Error("Invalid location");
     }
-  
+
     return shortestPaths[startIndex][endIndex];
   }
 
@@ -97,7 +121,11 @@ export default function Page() {
   const findDriver = () => {
     const driver = drivers.find((d) => d.available && d.car >= passengers);
     if (driver) {
-      setAvailableDriver({ name: driver.name, phone: driver.phone, telegram: driver.telegram });
+      setAvailableDriver({
+        name: driver.name,
+        phone: driver.phone,
+        telegram: driver.telegram,
+      });
       driver.available = false; // Mark the driver as unavailable after the request
     } else {
       setAvailableDriver(null);
@@ -107,7 +135,9 @@ export default function Page() {
   const handleRequest = () => {
     if (pickUp && destination) {
       if (pickUp === destination) {
-        setErrorMessage("Pickup and destination cannot be the same. Please select different locations.");
+        setErrorMessage(
+          "Pickup and destination cannot be the same. Please select different locations."
+        );
         setFee(null);
         setAvailableDriver(null);
         return;
@@ -126,7 +156,14 @@ export default function Page() {
   };
 
   return (
-    <div style={{ padding: "20px", fontFamily: "Arial", maxWidth: "600px", margin: "auto" }}>
+    <div
+      style={{
+        padding: "20px",
+        fontFamily: "Arial",
+        maxWidth: "600px",
+        margin: "auto",
+      }}
+    >
       {/* Header Image */}
       <div style={{ textAlign: "center" }}>
         <img
@@ -136,7 +173,9 @@ export default function Page() {
         />
       </div>
 
-      <h1 style={{ textAlign: "center", color: "#4CAF50" }}>Campus Ride Service</h1>
+      <h1 style={{ textAlign: "center", color: "#4CAF50" }}>
+        Campus Ride Service
+      </h1>
 
       {/* Pickup Location */}
       <div style={{ marginBottom: "10px" }}>
@@ -229,44 +268,47 @@ export default function Page() {
 
       {/* Results Section */}
       <div style={{ marginTop: "20px" }}>
-      {fee !== null && (
-        <>
-        <p style={{ fontSize: "16px", margin: "10px 0" }}>
-          <strong>Distance:</strong> {distance.toFixed(2)} km
-        </p>
-        <p style={{ fontSize: "16px", margin: "10px 0" }}>
-          <strong>Estimated Fee:</strong> RM {fee.toFixed(2)}
-        </p>
-      </>
-      )}
-      {availableDriver ? (
-      <div style={{ fontSize: "16px", margin: "10px 0" }}>
-        <p>
-          <strong>Available Driver:</strong> {availableDriver.name} <br />
-          <strong>Phone:</strong> {availableDriver.phone}
-        </p>
-        <a
-          href={`https://t.me/${availableDriver.telegram}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{
-            display: "inline-block",
-            padding: "10px 20px",
-            backgroundColor: "#0088cc",
-            color: "#fff",
-            textDecoration: "none",
-            borderRadius: "5px",
-            marginTop: "10px",
-          }}
-        >
-          Chat on Telegram
-        </a>
-      </div>
+        {fee !== null && (
+          <>
+            <p style={{ fontSize: "16px", margin: "10px 0" }}>
+              <strong>Distance:</strong> {distance.toFixed(2)} km
+            </p>
+            <p style={{ fontSize: "16px", margin: "10px 0" }}>
+              <strong>Estimated Fee:</strong> RM {fee.toFixed(2)}
+            </p>
+          </>
+        )}
+        {availableDriver ? (
+          <div style={{ fontSize: "16px", margin: "10px 0" }}>
+            <p>
+              <strong>Available Driver:</strong> {availableDriver.name} <br />
+              <strong>Phone:</strong> {availableDriver.phone}
+            </p>
+            <a
+              href={`https://t.me/${availableDriver.telegram}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: "inline-block",
+                padding: "10px 20px",
+                backgroundColor: "#0088cc",
+                color: "#fff",
+                textDecoration: "none",
+                borderRadius: "5px",
+                marginTop: "10px",
+              }}
+            >
+              Chat on Telegram
+            </a>
+          </div>
         ) : (
-          !errorMessage && <p style={{ fontSize: "16px", margin: "10px 0" }}>No drivers available</p>
+          !errorMessage && (
+            <p style={{ fontSize: "16px", margin: "10px 0" }}>
+              No drivers available
+            </p>
+          )
         )}
       </div>
-
     </div>
   );
 }

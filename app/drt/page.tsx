@@ -65,7 +65,14 @@ export default function Page() {
   };
 
   return (
-    <div style={{ padding: "20px", fontFamily: "Arial", maxWidth: "600px", margin: "auto" }}>
+    <div
+      style={{
+        padding: "20px",
+        fontFamily: "Arial",
+        maxWidth: "600px",
+        margin: "auto",
+      }}
+    >
       {/* Header Image */}
       <div style={{ textAlign: "center" }}>
         <img
@@ -75,7 +82,9 @@ export default function Page() {
         />
       </div>
 
-      <h1 style={{ textAlign: "center", color: "#4CAF50" }}>Campus Ride Service</h1>
+      <h1 style={{ textAlign: "center", color: "#4CAF50" }}>
+        Campus Ride Service
+      </h1>
 
       {/* Pickup Location */}
       <div style={{ marginBottom: "10px" }}>
@@ -180,4 +189,3 @@ export default function Page() {
     </div>
   );
 }
-
