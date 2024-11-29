@@ -69,7 +69,7 @@
 import { useParams } from "next/navigation";
 import { BUS_ROUTES } from "@/constant";
 import Image from "next/image";
-
+import TrackMap from "@/components/busum/TrackMap";
 const RoutePage = () => {
   const { slug } = useParams(); // Get dynamic route parameter
   const route = typeof slug === "string" ? BUS_ROUTES[slug] : null;
@@ -89,13 +89,14 @@ const RoutePage = () => {
       {/* Map Section */}
       <div className="mb-6">
         <h2 className="text-2xl font-semibold mb-2">Route Map</h2>
-        <Image
+        {/* <Image
           src={route.mapUrl}
           alt={`${route.name} map`}
           width={2000}
           height={2000}
           className="w-[600px] rounded-lg shadow-md"
-        />
+        /> */}
+        <TrackMap busStops={route.busStop} />
       </div>
       <div className="flex gap-x-20">
         {/* Timetable Section */}

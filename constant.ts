@@ -148,7 +148,7 @@ export type BusRoute = {
   name: string;
   mapUrl: string;
   timetable: { time: string }[];
-  busStop: { name: string }[];
+  busStop: { name: string; latitude: string; longitude: string }[];
 };
 
 export type BusRoutes = Record<string, BusRoute>;
@@ -180,15 +180,23 @@ export const BUS_ROUTES: BusRoutes = {
       { time: "9:00 PM" },
     ],
     busStop: [
-      { name: "Um Central" },
-      { name: "KK3/4/7" },
-      { name: "KK8/10" },
-      { name: "Academy of Islamic Studies" },
-      { name: "KK11" },
-      { name: "KK12" },
-      { name: "KK1" },
-      { name: "Faculty of Engineering" },
-      { name: "Um Central" },
+      { name: "Um Central", latitude: "3.1209692", longitude: "101.6536755" },
+      { name: "KK3/4/7", latitude: "3.1244442", longitude: "101.6513932" },
+      { name: "KK8/10", latitude: "3.1297330", longitude: "101.6500723" },
+      {
+        name: "Academy of Islamic Studies",
+        latitude: "3.1319643",
+        longitude: "101.6588474",
+      },
+      { name: "KK11", latitude: "3.1290986", longitude: "101.6602529" },
+      { name: "KK12", latitude: "3.1246223", longitude: "101.6600762" },
+      { name: "KK1", latitude: "3.117844", longitude: "101.659445" },
+      {
+        name: "Faculty of Engineering",
+        latitude: "3.1179097",
+        longitude: "101.6553441",
+      },
+      { name: "Um Central", latitude: "3.1209692", longitude: "101.6536755" },
     ],
   },
   "route-ba": {
@@ -217,14 +225,26 @@ export const BUS_ROUTES: BusRoutes = {
       { time: "9:00 PM" },
     ],
     busStop: [
-      { name: "Um Central" },
-      { name: "Pasum" },
-      { name: "KK5" },
-      { name: "Academy of Islamic Studies" },
-      { name: "KK8/10" },
-      { name: "Academy of Malay Studies" },
-      { name: "KK3/4/7" },
-      { name: "Faculty of Science" },
+      { name: "Um Central", latitude: "3.1209692", longitude: "101.6536755" },
+      { name: "Pasum", latitude: "3.121850", longitude: "101.659425" },
+      { name: "KK5", latitude: "3.126688", longitude: "101.659751" },
+      {
+        name: "Academy of Islamic Studies",
+        latitude: "3.1319643",
+        longitude: "101.6588474",
+      },
+      { name: "KK8/10", latitude: "3.1297330", longitude: "101.6500723" },
+      {
+        name: "Academy of Malay Studies",
+        latitude: "3.126200",
+        longitude: "101.651585",
+      },
+      { name: "KK3/4/7", latitude: "3.1244442", longitude: "101.6513932" },
+      {
+        name: "Faculty of Science",
+        latitude: "3.121931",
+        longitude: "101.653915",
+      },
     ],
   },
   "route-c": {
@@ -248,13 +268,17 @@ export const BUS_ROUTES: BusRoutes = {
       { time: "9:00 PM" },
     ],
     busStop: [
-      { name: "Um Central" },
-      { name: "Pasum" },
-      { name: "Angkasapuri" },
-      { name: "Pantai Permai" },
-      { name: "Bangsar South" },
-      { name: "Faculty of Engineering" },
-      { name: "Um Central" },
+      { name: "Um Central", latitude: "3.1209692", longitude: "101.6536755" },
+      { name: "Pasum", latitude: "3.121850", longitude: "101.659425" },
+      { name: "Angkasapuri", latitude: "3.113425", longitude: "101.670438" },
+      { name: "Pantai Permai", latitude: "3.107219", longitude: "101.671861" },
+      { name: "Bangsar South", latitude: "3.1106", longitude: "101.6663" },
+      {
+        name: "Faculty of Engineering",
+        latitude: "3.1179097",
+        longitude: "101.6553441",
+      },
+      { name: "Um Central", latitude: "3.1209692", longitude: "101.6536755" },
     ],
   },
   "route-college-13": {
@@ -262,13 +286,8 @@ export const BUS_ROUTES: BusRoutes = {
     mapUrl: "/images/busum/route-college-13-map.png",
     timetable: [{ time: "7:30 AM" }, { time: "8:00 AM" }],
     busStop: [
-      { name: "Um Central" },
-      { name: "Pasum" },
-      { name: "Angkasapuri" },
-      { name: "Pantai Permai" },
-      { name: "Bangsar South" },
-      { name: "Faculty of Engineering" },
-      { name: "Um Central" },
+      { name: "Um Central", latitude: "3.1209692", longitude: "101.6536755" },
+      { name: "KK13", latitude: "3.1203", longitude: "101.6399" },
     ],
   },
   "route-d": {
@@ -292,16 +311,52 @@ export const BUS_ROUTES: BusRoutes = {
       { time: "9:00 PM" },
     ],
     busStop: [
-      { name: "Faculty of Engineering (West)" },
-      { name: "International House" },
-      { name: "Rapid Stop 1" },
-      { name: "Rapid Stop 2: S.K. Sri Damai" },
-      { name: "Rapid Stop 3: PJ 219 Happy Mansion Apartment" },
-      { name: "Rapid Stop 4: PJ 220 Happy Apartment Gate a" },
-      { name: "Rapid Stop 5: PJ 233 Shell 17/22" },
-      { name: "Uia PJ (Barat)" },
-      { name: "Kolej Kediaman Ke-13" },
-      { name: "UM Central" },
+      {
+        name: "Faculty of Engineering (West)",
+        latitude: "3.1181158642154565",
+        longitude: "101.65540886872238",
+      },
+      {
+        name: "International House",
+        latitude: "3.119770608694724",
+        longitude: "101.6371193732726",
+      },
+      { name: "Rapid Stop 1", latitude: "3.119386", longitude: "101.634389" },
+      {
+        name: "Rapid Stop 2: S.K. Sri Damai",
+        latitude: "3.121271089455871",
+        longitude: "101.63387340251856",
+      },
+      {
+        name: "Rapid Stop 3: PJ 219 Happy Mansion Apartment",
+        latitude: "3.123520800223369",
+        longitude: "101.63400751297341",
+      },
+      {
+        name: "Rapid Stop 4: PJ 220 Happy Apartment Gate a",
+        latitude: "3.124827772861772",
+        longitude: "101.6345600480459",
+      },
+      {
+        name: "Rapid Stop 5: PJ 233 Shell 17/22",
+        latitude: "3.1248117035411758",
+        longitude: "101.63683456134123",
+      },
+      {
+        name: "Uia PJ (Barat)",
+        latitude: "3.12083886856422",
+        longitude: "101.6384369494925",
+      },
+      {
+        name: "Kolej Kediaman Ke-13",
+        latitude: "3.1206200105689126",
+        longitude: "101.63988349582486",
+      },
+      {
+        name: "UM Central",
+        latitude: "3.121151416538106",
+        longitude: "101.65363108047937",
+      },
     ],
   },
   "route-e": {
@@ -309,9 +364,13 @@ export const BUS_ROUTES: BusRoutes = {
     mapUrl: "/images/busum/route-e-map.png",
     timetable: [{ time: "7:30 AM" }, { time: "8:00 AM" }],
     busStop: [
-      { name: "Um Central" },
-      { name: "KK9" },
-      { name: "Faculty of Science" },
+      { name: "Um Central", latitude: "3.1209692", longitude: "101.6536755" },
+      { name: "KK9", latitude: "3.121664", longitude: "101.645662" },
+      {
+        name: "Faculty of Science",
+        latitude: "3.121931",
+        longitude: "101.653915",
+      },
     ],
   },
 };
