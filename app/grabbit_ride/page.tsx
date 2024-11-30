@@ -496,7 +496,14 @@ export default function GrabbitRidePage() {
   const [price, setPrice] = useState<number | null>(null);
 
   const [drivers, setDrivers] = useState<any[]>([]);
-  const [availableDriver, setAvailableDriver] = useState<any>(null);
+  const [availableDriver, setAvailableDriver] = useState<{id: string;
+                                                          name: string;
+                                                          phone: string;
+                                                          plateNo: string;
+                                                          type: string;
+                                                          car: number;
+                                                          available: boolean;
+                                                          telegram: string;}| null>(null)
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isRequestSent, setIsRequestSent] = useState<boolean>(false);
 
@@ -562,7 +569,7 @@ export default function GrabbitRidePage() {
   const findDriver = async () => {
     // Find a driver with enough seats available
     const driver = drivers.find(
-      (d) => d.available && d.seatAvailable >= numberOfPassengers
+      (d) => d.available && d.car >= numberOfPassengers
     );
   
     if (driver) {
@@ -573,9 +580,16 @@ export default function GrabbitRidePage() {
       await updateDoc(driverRef, { available: false });
   
       // Optionally reduce the seat count (if you track it in real-time)
-      await updateDoc(driverRef, {
-        seatAvailable: driver.seatAvailable - numberOfPassengers,
-      });
+      // await updateDoc(driverRef, {
+      //   seatAvailable: driver.seatAvailable - numberOfPassengers,
+      // });
+      setDrivers((prev) =>
+        prev.map((d) =>
+          d.id === driver.id
+            ? { ...d, available: false }
+            : d
+        )
+      );
     } else {
       setAvailableDriver(null);
     }
@@ -599,13 +613,12 @@ export default function GrabbitRidePage() {
       const driverRef = doc(db, "drivers", availableDriver.id);
       await updateDoc(driverRef, {
         available: true,
-        seatAvailable: availableDriver.seatAvailable + numberOfPassengers,
       });
   
       setDrivers((prev) =>
         prev.map((d) =>
           d.id === availableDriver.id
-            ? { ...d, available: true, seatAvailable: d.seatAvailable + numberOfPassengers }
+            ? { ...d, available: true }
             : d
         )
       );
