@@ -1,0 +1,12 @@
+specVersion: "v1beta"
+serviceId: "Hackathon_transport"
+location: "us-central1"
+schema:
+  source: "./schema"
+  datasource:
+    postgresql:
+      database: "fdcdb"
+      cloudSql:
+        instanceId: "Hackathon_transport-fdc"
+      # schemaValidation: "COMPATIBLE"
+connectorDirs: ["./connector"]

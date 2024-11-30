@@ -9,58 +9,227 @@
 // };
 
 // export default Page;
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { initializeApp } from "firebase/app";
+import { collection, doc, getDocs, getFirestore, updateDoc } from "firebase/firestore";
 
 export default function Page() {
   const locations = ["Library", "Hostel", "Cafeteria", "Main Gate", "Lab"];
-  const vans = [
-    { id: 1, name: "Van A", available: true, capacity: 15 },
-    { id: 2, name: "Van B", available: true, capacity: 15 },
-  ];
+  // const vans = [
+  //   { id: 1, name: "Van A", available: true, capacity: 15 },
+  //   { id: 2, name: "Van B", available: true, capacity: 15 },
+  // ];
+
+  // Your Firebase project configuration (found in the Firebase Console under "Project Settings")
+  const firebaseConfig = {
+    apiKey: "AIzaSyCMpwWdMFCmjjywDNzzzA8yXabKCsBYk3U",
+    authDomain: "transportation-9807f.firebaseapp.com",
+    projectId: "transportation-9807f",
+    storageBucket: "transportation-9807f.firebasestorage.app",
+    messagingSenderId: "1022719929860",
+    appId: "1:1022719929860:web:88a131723113eb0f434f51",
+    measurementId: "G-NMVHGRNJNQ"
+  };
+
+  // Initialize Firebase and Firestore
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
 
   const [pickUp, setPickUp] = useState<string>("");
   const [destination, setDestination] = useState<string>("");
   const [passengers, setPassengers] = useState<number>(1);
-  const [availableVan, setAvailableVan] = useState<string>("");
+  const [orderPassengers, setOrderPassengers] = useState<number>(1);
+  // const [availableVan, setAvailableVan] = useState<string>("");
+  const [availableVan, setAvailableVan] = useState<{id: string;
+                                                    name: string; 
+                                                    plateNo : string;
+                                                    seatAvailable: number;
+                                                    available: boolean;
+                                                    capacity: number
+                                                    } | null>(null);
   const [waitingTime, setWaitingTime] = useState<number | null>(null);
+  const [shortestPaths, setShortestPaths] = useState<number[][] | null>(null); // State for shortest paths
+  const [distance, setDistance] = useState<number | 0>(0);  // State for storing the distance
   const fixedFee = 1; // Fixed fare RM1
+  const [vans, setVans] = useState<any[]>([]);  // Store all vans with seatAvailable
+  const [noVansAvailableMessage, setNoVansAvailableMessage] = useState<string | null>(null);
+  const [isRequestSent, setIsRequestSent] = useState(false); // To track if request is sent
+  const [canceled, setCanceled] = useState(false); // State to track if the ride was canceled
 
-  const distanceMatrix: Record<string, Record<string, number>> = {
-    Library: { Hostel: 2, Cafeteria: 1.5, "Main Gate": 3, Lab: 2.5 },
-    Hostel: { Library: 2, Cafeteria: 1, "Main Gate": 2.5, Lab: 3 },
-    Cafeteria: { Hostel: 1, Library: 1.5, "Main Gate": 2, Lab: 1.2 },
-    "Main Gate": { Hostel: 2.5, Cafeteria: 2, Library: 3, Lab: 0.5 },
-    Lab: { Hostel: 3, Cafeteria: 1.2, Library: 2.5, "Main Gate": 0.5 },
-  };
 
-  const calculateTime = () => {
-    if (pickUp && destination && pickUp !== destination) {
-      const distance = distanceMatrix[pickUp]?.[destination];
-      if (distance !== undefined) {
-        setWaitingTime(distance * 5); // 5 minutes per km
-      } else {
-        setWaitingTime(null);
+  // const distanceMatrix: Record<string, Record<string, number>> = {
+  //   Library: { Hostel: 2, Cafeteria: 1.5, "Main Gate": 3, Lab: 2.5 },
+  //   Hostel: { Library: 2, Cafeteria: 1, "Main Gate": 2.5, Lab: 3 },
+  //   Cafeteria: { Hostel: 1, Library: 1.5, "Main Gate": 2, Lab: 1.2 },
+  //   "Main Gate": { Hostel: 2.5, Cafeteria: 2, Library: 3, Lab: 0.5 },
+  //   Lab: { Hostel: 3, Cafeteria: 1.2, Library: 2.5, "Main Gate": 0.5 },
+  // };
+
+  const graph = [
+    [0, 2, 1.5, 3, 2.5], // Distances from Library
+    [2, 0, 1, 2.5, 3],   // Distances from Hostel
+    [1.5, 1, 0, 2, 1.2], // Distances from Cafeteria
+    [3, 2.5, 2, 0, 0.5], // Distances from Main Gate
+    [2.5, 3, 1.2, 0.5, 0], // Distances from Lab
+  ];
+
+  // useEffect to calculate shortest paths once when component mounts
+  useEffect(() => {
+    const shortestPaths = floydWarshall(graph);
+    setShortestPaths(shortestPaths); // Set the state with the result
+  }, []);
+
+  function floydWarshall(graph: number[][]) {
+    const dist = JSON.parse(JSON.stringify(graph)); // Clone graph to avoid mutation
+    const n = graph.length;
+
+    // Perform the Floyd-Warshall algorithm
+    for (let k = 0; k < n; k++) {
+      for (let i = 0; i < n; i++) {
+        for (let j = 0; j < n; j++) {
+          if (dist[i][k] + dist[k][j] < dist[i][j]) {
+            dist[i][j] = dist[i][k] + dist[k][j];
+          }
+        }
       }
-    } else {
-      setWaitingTime(null);
     }
+
+    return dist;
+  }
+
+
+  // Utility to fetch the shortest path between locations
+  function getDistance(start: string, end: string): number {
+    if (shortestPaths === null) return 0; // Guard clause if shortestPaths is not available
+    const startIndex = locations.indexOf(start);
+    const endIndex = locations.indexOf(end);
+  
+    if (startIndex === -1 || endIndex === -1) {
+      throw new Error("Invalid location");
+    }
+  
+    return shortestPaths[startIndex][endIndex];
+  }
+
+  // const calculateTime = () => {
+  //   if (pickUp && destination && pickUp !== destination) {
+  //     const distance = distanceMatrix[pickUp]?.[destination];
+  //     if (distance !== undefined) {
+  //       setWaitingTime(distance * 5); // 5 minutes per km
+  //     } else {
+  //       setWaitingTime(null);
+  //     }
+  //   } else {
+  //     setWaitingTime(null);
+  //   }
+  // };
+  // Fetch driver data (including seatAvailable)
+  const fetchVans = async () => {
+    const vansRef = collection(db, "drt");
+    const vansSnapshot = await getDocs(vansRef);
+    const vanData = vansSnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    setVans(vanData);
   };
 
-  const findVan = () => {
-    const van = vans.find((v) => v.available && v.capacity >= passengers);
-    setAvailableVan(van ? van.name : "No vans available");
+  useEffect(() => {
+    fetchVans();  // Fetch the drivers when the component loads
+  }, []);
+
+  // Find available driver based on seat availability
+  const findVan = async () => {
+    const van = vans.find((v) => v.available && v.seatAvailable >= passengers);
     if (van) {
-      van.available = false; // Mark the van as unavailable after the request
+      setAvailableVan({ 
+        id: van.id,
+        name: van.name, 
+        plateNo: van.plateNo,
+        seatAvailable : van.seatAvailable - passengers,
+        available : van.available,
+        capacity : van.capacity,
+        });
+        setOrderPassengers(passengers);
+
+      // Update driver's seat availability
+      const driverRef = doc(db, "drt", van.id);
+      await updateDoc(driverRef, {
+        seatAvailable: van.seatAvailable - passengers,  // Subtract passengers from seatAvailable
+        available: van.seatAvailable - passengers > 0,  // If seats are 0, mark as unavailable
+      });
+      // Update the vans state immutably
+      if(availableVan){
+        const updatedVans = vans.map((v) =>
+        v.id === availableVan.id
+          ? { ...v, seatAvailable: availableVan.seatAvailable, available: (availableVan.seatAvailable) > 0 }
+          : v
+        );
+      }
+      setNoVansAvailableMessage(null); // Clear the message if a van is available
+      setIsRequestSent(true); // Mark request as sent
+    } else {
+      setAvailableVan(null);
+      setNoVansAvailableMessage("No vans available for your request.");
     }
   };
 
-  const handleRequest = () => {
+  useEffect(() => {
+    if (pickUp || destination) {
+      setIsRequestSent(false); // Reset if either pickUp or destination changes after a request is sent
+    }
+  }, [pickUp, destination]);
+
+
+  // const findVan = () => {
+  //   const van = vans.find((v) => v.available && v.capacity >= passengers);
+  //   setAvailableVan(van ? van.name : "No vans available");
+  //   if (van) {
+  //     van.available = false; // Mark the van as unavailable after the request
+  //   }
+  // };
+
+  const handleRequest = async () => {
     if (pickUp && destination && pickUp !== destination) {
-      calculateTime();
-      findVan();
+      const calculatedDistance = getDistance(pickUp, destination); 
+      setWaitingTime(calculatedDistance * 5)
+      await findVan();
+      setCanceled(false);
     } else {
-      setAvailableVan("Invalid request. Please select different locations.");
+      setAvailableVan(null);
       setWaitingTime(null);
+    }
+  };
+
+  const handleCancel = async () => {
+    // Reset all relevant states
+    setPickUp("");
+    setDestination("");
+    setPassengers(1);
+    setWaitingTime(null);
+    setDistance(0);
+    setCanceled(true); // Mark that the order was canceled
+    
+    if (availableVan) {
+      // Use the availableDriver's ID for Firestore reference
+      const driverRef = doc(db, "drt", availableVan.id);
+      
+      // Now update the driver's seat availability and availability status
+      await updateDoc(driverRef, {
+        seatAvailable: availableVan.seatAvailable + orderPassengers,  // Subtract passengers from seatAvailable
+        available: (availableVan.seatAvailable + orderPassengers) > 0,  // If seats become 0, mark as unavailable
+      });
+
+      const updatedVans = vans.map((d) => 
+        d.id === availableVan.id 
+        ? { ...d, seatAvailable: d.seatAvailable + orderPassengers, available: (d.seatAvailable + orderPassengers) > 0 }
+        : d
+      );
+      
+      setVans(updatedVans); // Update the drivers state
+      setAvailableVan(null);
+      // Optionally, set some state or flags if you need to indicate that the request was sent
+      setIsRequestSent(false);  // Mark request as sent
     }
   };
 
@@ -144,7 +313,7 @@ export default function Page() {
 
       {/* Request Button */}
       <button
-        onClick={handleRequest}
+        onClick={() => handleRequest()}
         style={{
           padding: "10px 20px",
           backgroundColor: "#4CAF50",
@@ -172,9 +341,38 @@ export default function Page() {
           </p>
         )}
         {availableVan && (
-          <p style={{ fontSize: "16px", margin: "10px 0" }}>
-            <strong>Available Van:</strong> {availableVan}
+          <div>
+            <p style={{ fontSize: "16px", margin: "10px 0" }}>
+              <strong>Available Van:</strong> {availableVan.name}
+            </p>
+            <p style={{ fontSize: "16px", margin: "10px 0" }}>
+              <strong>Plate Number:</strong> {availableVan.plateNo}
+            </p>
+          </div>
+        )}
+        {noVansAvailableMessage && (
+          <p style={{ fontSize: "16px", color: "red", margin: "10px 0" }}>
+            <strong>{noVansAvailableMessage}</strong>
           </p>
+        )}
+        {/* Cancel Order Button */}
+        {isRequestSent && !canceled && (
+          <button
+            onClick={handleCancel} // Cancel the request
+            style={{
+              padding: "10px 20px",
+              backgroundColor: "#f44336", // Red color for cancel
+              color: "#fff",
+              border: "none",
+              borderRadius: "5px",
+              cursor: "pointer",
+              display: "block",
+              marginTop: "15px",
+              margin: "10px auto",
+            }}
+          >
+          Cancel Order
+        </button>
         )}
       </div>
     </div>
