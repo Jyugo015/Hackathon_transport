@@ -412,6 +412,7 @@ export default function GrabbitRidePage() {
   const [vans, setVans] = useState<any[]>([]);
   const [noVansAvailableMessage, setNoVansAvailableMessage] = useState<string | null>(null);
   const [isRequestSent, setIsRequestSent] = useState<boolean>(false);
+  const [canceled, setCanceled] = useState(false); // State to track if the ride was canceled
 
   const fixedFee = 1; // fee fixed RM 1
 
@@ -471,23 +472,31 @@ export default function GrabbitRidePage() {
 
   // find available van
   const findVan = async () => {
-    const van = vans.find((v) => v.available && numberOfPassengers <= v.car);
+    const van = vans.find((v) => v.available && numberOfPassengers <= v.seatAvailable);
     if (van) {
       setAvailableVan({
         id: van.id,
         name: van.name,
         plateNo: van.plateNo,
-        available: van.available,
         capacity: van.car,
+        seatAvailable : van.seatAvailable - numberOfPassengers,
+        available : van.seatAvailable - numberOfPassengers > 0,
       });
-
+      // Update driver's seat availability
       const vanRef = doc(db, "drt", van.id);
-      await updateDoc(vanRef, { available: false });
-
-      const updatedVans = vans.map((v) =>
-        v.id === van.id ? { ...v, available: false } : v
-      );
-      setVans(updatedVans);
+      await updateDoc(vanRef, {
+        seatAvailable: van.seatAvailable - numberOfPassengers,  // Subtract passengers from seatAvailable
+        available: van.seatAvailable - numberOfPassengers > 0,  // If seats are 0, mark as unavailable
+      });
+      // Update the vans state immutably
+      if(availableVan){
+        const updatedVans = vans.map((v) =>
+        v.id === availableVan.id
+          ? { ...v, seatAvailable: availableVan.seatAvailable, available: (availableVan.seatAvailable) > 0 }
+          : v
+        );
+        setVans(updatedVans); 
+      }
 
       setNoVansAvailableMessage(null);
       setIsRequestSent(true);
@@ -502,23 +511,33 @@ export default function GrabbitRidePage() {
     if (originRef.current?.value && destinationRef.current?.value) {
       await calculateRoute();
       await findVan();
+      setCanceled(false);
     } else {
       setNoVansAvailableMessage("Please select both pickup and destination locations.");
+      setDistance(null);
+      setDuration(null);
     }
   };
 
+  useEffect(() => {
+    if (originRef || destinationRef) {
+      setIsRequestSent(false); // Reset if either pickUp or destination changes after a request is sent
+    }
+  }, [originRef, destinationRef]);
+
   // cancel request van
   const handleCancel = async () => {
+    setCanceled(true);
     if (availableVan) {
       const vanRef = doc(db, "drt", availableVan.id);
-      await updateDoc(vanRef, { available: true });
+      await updateDoc(vanRef, { seatAvailable: availableVan.seatAvailable + numberOfPassengers, available: (availableVan.seatAvailable + numberOfPassengers) > 0});
 
       const updatedVans = vans.map((v) =>
-        v.id === availableVan.id ? { ...v, available: true } : v
+        v.id === availableVan.id ? { ...v, seatAvailable: availableVan.seatAvailable + numberOfPassengers, available: (availableVan.seatAvailable + numberOfPassengers) > 0 } : v
       );
       setVans(updatedVans);
     }
-
+    setNumberOfPassengers(1);
     setAvailableVan(null);
     setIsRequestSent(false);
     setDistance(null);
