@@ -1,87 +1,4 @@
 "use client";
-// const Page= () => {
-
-//   return (
-//     // <div>
-//     //   <h1>Grabbit Ride</h1>
-//     //   <p className="h-screen">This is the content for book ride page.</p>
-//     // </div>
-//   );
-// };
-
-//       {/* Results Section */}
-//       <div style={{ marginTop: "20px" }}>
-//       {fee !== null && (
-//         <>
-//         <p style={{ fontSize: "16px", margin: "10px 0" }}>
-//           <strong>Distance:</strong> {distance.toFixed(2)} km
-//         </p>
-//         <p style={{ fontSize: "16px", margin: "10px 0" }}>
-//           <strong>Estimated Fee:</strong> RM {fee.toFixed(2)}
-//         </p>
-//       </>
-//       )}
-//       {availableDriver ? (
-//       <div style={{ fontSize: "16px", margin: "10px 0" }}>
-//         <p>
-//         <strong>Available Driver:</strong> {availableDriver.name} <br />
-//         <strong>Phone:</strong> {availableDriver.phone} <br />
-//         <strong>Plate Number:</strong> {availableDriver.plateNo} <br />
-//         <strong>Vehicle Type:</strong> {availableDriver.type} <br />
-//         </p>
-//         <div
-//             style={{
-//               display: "flex",
-//               justifyContent: "space-between",
-//               alignItems: "center",
-//               marginTop: "15px", // Adds margin-top for proper spacing
-//             }}
-//           >
-//           {/* Chat on Telegram button */}
-//             <a
-//               href={`https://t.me/${availableDriver.telegram}`}
-//               target="_blank"
-//               rel="noopener noreferrer"
-//               style={{
-//                 display: "inline-block",
-//                 padding: "10px 20px",
-//                 backgroundColor: "#0088cc",
-//                 color: "#fff",
-//                 textDecoration: "none",
-//                 borderRadius: "5px",
-//               }}
-//             >
-//               Chat on Telegram
-//         </a>
-
-//         {/* Cancel Order Button */}
-//         <button
-//           onClick={() => handleCancel()} // Cancel the request
-//           style={{
-//             padding: "10px 20px",
-//             backgroundColor: "#f44336", // Red color for cancel
-//             color: "#fff",
-//             border: "none",
-//             borderRadius: "5px",
-//             cursor: "pointer",
-//             display: "block",
-//             margin: "10px auto",
-//             marginLeft: "250px", // This pushes the button to the far right
-//           }}
-//         >
-//           Cancel Order
-//         </button>
-//         </div>
-//       </div>
-//         ) : (
-//           !errorMessage && <p style={{ fontSize: "16px", margin: "10px 0" }}>No drivers available</p>
-//         )}
-//       </div>
-
-//     </div>
-//   );
-// }
-
 import React, { useRef, useState, useEffect } from "react";
 import {
   getFirestore,
@@ -210,10 +127,6 @@ export const GrabbitRidePage = () => {
       const driverRef = doc(db, "drivers", driver.id);
       await updateDoc(driverRef, { available: false });
 
-      // Optionally reduce the seat count (if you track it in real-time)
-      // await updateDoc(driverRef, {
-      //   seatAvailable: driver.seatAvailable - numberOfPassengers,
-      // });
       setDrivers((prev) =>
         prev.map((d) => (d.id === driver.id ? { ...d, available: false } : d))
       );
@@ -355,40 +268,6 @@ export const GrabbitRidePage = () => {
           />
         </div>
       )}
-
-      {/* Calculate Route Button
-      <button
-        onClick={calculateRoute}
-        style={{
-          padding: "10px 20px",
-          backgroundColor: "#4CAF50",
-          color: "#fff",
-          border: "none",
-          borderRadius: "5px",
-          cursor: "pointer",
-          display: "block",
-          margin: "10px auto",
-        }}
-      >
-        Calculate Route
-      </button> */}
-
-      {/* Display Distance, Duration, and Price
-      {distance && duration && (
-        <div style={{ marginTop: "20px", textAlign: "center" }}>
-          <p>
-            <strong>Distance:</strong> {distance}
-          </p>
-          <p>
-            <strong>Duration:</strong> {duration}
-          </p>
-          {price !== null && (
-            <p>
-              <strong>Estimated Price:</strong> RM {price.toFixed(2)}
-            </p>
-          )}
-        </div>
-      )} */}
 
       {/* Number of Passengers */}
       <div style={{ marginBottom: "10px" }}>
