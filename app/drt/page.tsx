@@ -650,7 +650,7 @@ export default function GrabbitRidePage() {
       )}
 
       {/* Results */}
-      {distance && duration && (
+      {isRequestSent&& distance && duration && (
         <div style={{ marginTop: "20px", textAlign: "center" }}>
           <p>
             <strong>Distance:</strong> {distance}
@@ -659,14 +659,14 @@ export default function GrabbitRidePage() {
             <strong>Duration:</strong> {duration}
           </p>
           <p>
-            <strong>Fixed Fee:</strong> RM {fixedFee}
+            <strong>Fixed Fee:</strong> RM {fixedFee*numberOfPassengers}
           </p>
         </div>
       )}
 
       {/* Van messager */}
       {availableVan ? (
-        <div style={{ textAlign: "center", marginTop: "20px" }}>
+        <div style={{ textAlign: "center", marginTop: "5px" }}>
           <p>
             <strong>Van Name:</strong> {availableVan.name} <br />
             <strong>Plate Number:</strong> {availableVan.plateNo}
