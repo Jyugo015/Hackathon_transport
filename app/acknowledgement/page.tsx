@@ -1,4 +1,9 @@
 import BioAutography from "@/components/acknowledgement/BioAutography";
+import { getPageMetadata } from "@/components/seo/metadataHelper";
+
+export async function generateMetadata() {
+  return getPageMetadata("acknowledgement");
+}
 const Page = () => {
   return (
     <div className="p-6">

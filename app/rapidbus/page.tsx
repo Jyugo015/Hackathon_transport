@@ -1,6 +1,11 @@
 import Buses from "@/components/rapidbus/Buses";
 import ButtonList from "@/components/ButtonList";
 import { RAPID_KL_BUSES } from "@/constant";
+import { getPageMetadata } from "@/components/seo/metadataHelper";
+
+export async function generateMetadata() {
+  return getPageMetadata("rapidbus");
+}
 const PageOne = () => {
   return (
     <div className="p-6 space-y-8">

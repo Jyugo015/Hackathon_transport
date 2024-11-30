@@ -2,16 +2,14 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { HERO_ITEMS } from "@/constant";
-import { useRouter } from "next/navigation"; // Importing useRouter for page navigation
+import { useRouter } from "next/navigation";
 
 const Slider = () => {
-  const [currentSlide, setCurrentSlide] = useState(0); // Track the active slide
-  const router = useRouter(); // Hook for page navigation
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const router = useRouter();
 
-  // Total number of slides
   const totalSlides = HERO_ITEMS.length;
 
-  // Automatic slide change every 3 seconds
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentSlide((prevSlide) => (prevSlide + 1) % totalSlides);
@@ -20,7 +18,6 @@ const Slider = () => {
     return () => clearInterval(interval); // Cleanup interval on component unmount
   }, [totalSlides]);
 
-  // Go to the next slide
   const handleNext = () => {
     setCurrentSlide((prevSlide) => (prevSlide + 1) % totalSlides);
   };
