@@ -1,0 +1,17 @@
+{
+  "dataconnect": {
+    "source": "dataconnect"
+  },
+  "firestore": {
+    "rules": "firebase.js",
+    "indexes": "firebaseIndex.js"
+  },
+  "hosting": {
+    "public": "hachkathon_transport",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  }
+}

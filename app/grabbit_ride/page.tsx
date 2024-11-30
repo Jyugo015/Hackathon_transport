@@ -9,152 +9,250 @@
 //   );
 // };
 
-// export default Page;
-import { useEffect, useState } from "react";
+//       {/* Results Section */}
+//       <div style={{ marginTop: "20px" }}>
+//       {fee !== null && (
+//         <>
+//         <p style={{ fontSize: "16px", margin: "10px 0" }}>
+//           <strong>Distance:</strong> {distance.toFixed(2)} km
+//         </p>
+//         <p style={{ fontSize: "16px", margin: "10px 0" }}>
+//           <strong>Estimated Fee:</strong> RM {fee.toFixed(2)}
+//         </p>
+//       </>
+//       )}
+//       {availableDriver ? (
+//       <div style={{ fontSize: "16px", margin: "10px 0" }}>
+//         <p>
+//         <strong>Available Driver:</strong> {availableDriver.name} <br />
+//         <strong>Phone:</strong> {availableDriver.phone} <br />
+//         <strong>Plate Number:</strong> {availableDriver.plateNo} <br />
+//         <strong>Vehicle Type:</strong> {availableDriver.type} <br />
+//         </p>
+//         <div
+//             style={{
+//               display: "flex",
+//               justifyContent: "space-between",
+//               alignItems: "center",
+//               marginTop: "15px", // Adds margin-top for proper spacing
+//             }}
+//           >
+//           {/* Chat on Telegram button */}
+//             <a
+//               href={`https://t.me/${availableDriver.telegram}`}
+//               target="_blank"
+//               rel="noopener noreferrer"
+//               style={{
+//                 display: "inline-block",
+//                 padding: "10px 20px",
+//                 backgroundColor: "#0088cc",
+//                 color: "#fff",
+//                 textDecoration: "none",
+//                 borderRadius: "5px",
+//               }}
+//             >
+//               Chat on Telegram
+//         </a>
 
-export default function Page() {
-  const locations = ["Library", "Hostel", "Cafeteria", "Main Gate", "Lab"];
-  const drivers = [
-    {
-      id: 1,
-      name: "Driver A",
-      available: true,
-      car: 4,
-      phone: "012-3456789",
-      telegram: "lyw015018",
-    },
-    {
-      id: 2,
-      name: "Driver B",
-      available: true,
-      car: 6,
-      phone: "013-9876543",
-      telegram: "lyw015018",
-    },
-    {
-      id: 3,
-      name: "Driver C",
-      available: true,
-      car: 4,
-      phone: "014-5678910",
-      telegram: "lyw015018",
-    },
-  ];
+//         {/* Cancel Order Button */}
+//         <button
+//           onClick={() => handleCancel()} // Cancel the request
+//           style={{
+//             padding: "10px 20px",
+//             backgroundColor: "#f44336", // Red color for cancel
+//             color: "#fff",
+//             border: "none",
+//             borderRadius: "5px",
+//             cursor: "pointer",
+//             display: "block",
+//             margin: "10px auto",
+//             marginLeft: "250px", // This pushes the button to the far right
+//           }}
+//         >
+//           Cancel Order
+//         </button>
+//         </div>
+//       </div>
+//         ) : (
+//           !errorMessage && <p style={{ fontSize: "16px", margin: "10px 0" }}>No drivers available</p>
+//         )}
+//       </div>
 
-  const [pickUp, setPickUp] = useState<string>("");
-  const [destination, setDestination] = useState<string>("");
-  const [passengers, setPassengers] = useState<number>(1);
-  const [fee, setFee] = useState<number | null>(null);
-  const [availableDriver, setAvailableDriver] = useState<{
-    name: string;
-    phone: string;
-    telegram: string;
-  } | null>(null);
-  const [errorMessage, setErrorMessage] = useState<string>("");
-  const [shortestPaths, setShortestPaths] = useState<number[][] | null>(null); // State for shortest paths
-  const [distance, setDistance] = useState<number | 0>(0); // State for storing the distance
+//     </div>
+//   );
+// }
 
-  // const distanceMatrix: Record<string, Record<string, number>> = {
-  //   Library: { Hostel: 2, Cafeteria: 1.5, "Main Gate": 3, Lab: 2.5 },
-  //   Hostel: { Library: 2, Cafeteria: 1, "Main Gate": 2.5, Lab: 3 },
-  //   Cafeteria: { Hostel: 1, Library: 1.5, "Main Gate": 2, Lab: 1.2 },
-  //   "Main Gate": { Hostel: 2.5, Cafeteria: 2, Library: 3, Lab: 0.5 },
-  //   Lab: { Hostel: 3, Cafeteria: 1.2, Library: 2.5, "Main Gate": 0.5 },
-  // };
+import React, { useRef, useState, useEffect} from "react";
+import { getFirestore, doc, setDoc, collection, getDocs, getDoc, updateDoc } from "firebase/firestore";
+import { initializeApp } from "firebase/app";
+import {
+  DirectionsRenderer,
+  GoogleMap,
+  useJsApiLoader,
+} from "@react-google-maps/api";
+import { CustomInput } from "@/components/grabbit_ride/CustomInput"; // Adjust the import path as needed
 
-  // Graph Representation as an Adjacency Matrix
-  // const locations = ["Library", "Hostel", "Cafeteria", "Main Gate", "Lab"];
-  const graph = [
-    [0, 2, 1.5, 3, 2.5], // Distances from Library
-    [2, 0, 1, 2.5, 3], // Distances from Hostel
-    [1.5, 1, 0, 2, 1.2], // Distances from Cafeteria
-    [3, 2.5, 2, 0, 0.5], // Distances from Main Gate
-    [2.5, 3, 1.2, 0.5, 0], // Distances from Lab
-  ];
+export default function GrabbitRidePage() {
+  // Your Firebase project configuration (found in the Firebase Console under "Project Settings")
+  const firebaseConfig = {
+    apiKey: "AIzaSyCMpwWdMFCmjjywDNzzzA8yXabKCsBYk3U",
+    authDomain: "transportation-9807f.firebaseapp.com",
+    projectId: "transportation-9807f",
+    storageBucket: "transportation-9807f.firebasestorage.app",
+    messagingSenderId: "1022719929860",
+    appId: "1:1022719929860:web:88a131723113eb0f434f51",
+    measurementId: "G-NMVHGRNJNQ"
+  };
 
-  // useEffect to calculate shortest paths once when component mounts
+  // Initialize Firebase and Firestore
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+
+  const originRef = useRef<HTMLInputElement>(null);
+  const destinationRef = useRef<HTMLInputElement>(null);
+  const [numberOfPassengers, setNumberOfPassengers] = useState(1);
+  const [directionsResponse, setDirectionsResponse] = useState<any>(null);
+  const [distance, setDistance] = useState<string | null>(null);
+  const [duration, setDuration] = useState<string | null>(null);
+  const [price, setPrice] = useState<number | null>(null);
+
+  const [drivers, setDrivers] = useState<any[]>([]);
+  const [availableDriver, setAvailableDriver] = useState<{id: string;
+                                                          name: string;
+                                                          phone: string;
+                                                          plateNo: string;
+                                                          type: string;
+                                                          car: number;
+                                                          available: boolean;
+                                                          telegram: string;}| null>(null)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isRequestSent, setIsRequestSent] = useState<boolean>(false);
+
+  const { isLoaded } = useJsApiLoader({
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
+    libraries: ["places"],
+  });
+
+  const calculateRoute = async () => {
+    if (!originRef.current?.value || !destinationRef.current?.value) {
+      alert("Please fill out both pickup and destination fields.");
+      return;
+    }
+
+    const directionsService = new google.maps.DirectionsService();
+    try {
+      const results = await directionsService.route({
+        origin: originRef.current.value,
+        destination: destinationRef.current.value,
+        travelMode: google.maps.TravelMode.DRIVING,
+      });
+
+      if (results.routes?.length > 0) {
+        const route = results.routes[0].legs[0];
+        if (route.distance) {
+          const distanceInKm = route.distance.value / 1000; // Convert meters to kilometers
+          const calculatedPrice = distanceInKm * 3; // RM3 per kilometer
+
+          setDirectionsResponse(results);
+          setDistance(route.distance.text || null);
+          setDuration(route.duration ? route.duration.text : null);
+          setPrice(calculatedPrice);
+        } else {
+          alert("Distance information is not available.");
+        }
+      } else {
+        alert("No route found between the selected locations.");
+      }
+    } catch (error) {
+      console.error("Error calculating route:", error);
+    }
+  };
+
+  // Fetch Drivers from Firestore
+  const fetchDrivers = async () => {
+    try {
+      const driversSnapshot = await getDocs(collection(db, "drivers"));
+      const driverData = driversSnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setDrivers(driverData);
+    } catch (error) {
+      console.error("Error fetching drivers:", error);
+    }
+  };
+
   useEffect(() => {
-    const shortestPaths = floydWarshall(graph);
-    setShortestPaths(shortestPaths); // Set the state with the result
+    fetchDrivers();
   }, []);
 
-  function floydWarshall(graph: number[][]) {
-    const dist = JSON.parse(JSON.stringify(graph)); // Clone graph to avoid mutation
-    const n = graph.length;
-
-    // Perform the Floyd-Warshall algorithm
-    for (let k = 0; k < n; k++) {
-      for (let i = 0; i < n; i++) {
-        for (let j = 0; j < n; j++) {
-          if (dist[i][k] + dist[k][j] < dist[i][j]) {
-            dist[i][j] = dist[i][k] + dist[k][j];
-          }
-        }
-      }
-    }
-
-    return dist;
-  }
-
-  // Utility to fetch the shortest path between locations
-  function getDistance(start: string, end: string): number {
-    if (shortestPaths === null) return 0; // Guard clause if shortestPaths is not available
-    const startIndex = locations.indexOf(start);
-    const endIndex = locations.indexOf(end);
-
-    if (startIndex === -1 || endIndex === -1) {
-      throw new Error("Invalid location");
-    }
-
-    return shortestPaths[startIndex][endIndex];
-  }
-
-  // const calculateFee = () => {
-  //   const distance = distanceMatrix[pickUp]?.[destination];
-  //   if (distance !== undefined) {
-  //     setFee(distance * 1.5); // 1.5 units per km
-  //   } else {
-  //     setFee(null);
-  //   }
-  // };
-
-  const findDriver = () => {
-    const driver = drivers.find((d) => d.available && d.car >= passengers);
+  // Find Available Driver
+  const findDriver = async () => {
+    // Find a driver with enough seats available
+    const driver = drivers.find(
+      (d) => d.available && d.car >= numberOfPassengers
+    );
+  
     if (driver) {
-      setAvailableDriver({
-        name: driver.name,
-        phone: driver.phone,
-        telegram: driver.telegram,
-      });
-      driver.available = false; // Mark the driver as unavailable after the request
+      setAvailableDriver(driver);
+  
+      // Update Firestore to mark the driver as unavailable
+      const driverRef = doc(db, "drivers", driver.id);
+      await updateDoc(driverRef, { available: false });
+  
+      // Optionally reduce the seat count (if you track it in real-time)
+      // await updateDoc(driverRef, {
+      //   seatAvailable: driver.seatAvailable - numberOfPassengers,
+      // });
+      setDrivers((prev) =>
+        prev.map((d) =>
+          d.id === driver.id
+            ? { ...d, available: false }
+            : d
+        )
+      );
     } else {
       setAvailableDriver(null);
     }
   };
-
-  const handleRequest = () => {
-    if (pickUp && destination) {
-      if (pickUp === destination) {
-        setErrorMessage(
-          "Pickup and destination cannot be the same. Please select different locations."
-        );
-        setFee(null);
-        setAvailableDriver(null);
-        return;
-      }
-      setErrorMessage(""); // Clear any previous error messages
-      // calculateFee();
-      const calculatedDistance = getDistance(pickUp, destination); // Get the distance between locations
-      setDistance(calculatedDistance); // Set the calculated distance
-      setFee(calculatedDistance * 1.5); // Calculate and set the fee
-      findDriver();
+ 
+  // Handle Request Ride
+  const handleRequest = async () => {
+    if (originRef.current?.value && destinationRef.current?.value) {
+      await calculateRoute();
+      await findDriver(); // Assign a suitable driver
+      setIsRequestSent(true);
     } else {
       setErrorMessage("Please select both pickup and destination locations.");
-      setFee(null);
-      setAvailableDriver(null);
     }
   };
 
+  // Cancel Ride
+  const handleCancel = async () => {
+    if (availableDriver) {
+      const driverRef = doc(db, "drivers", availableDriver.id);
+      await updateDoc(driverRef, {
+        available: true,
+      });
+  
+      setDrivers((prev) =>
+        prev.map((d) =>
+          d.id === availableDriver.id
+            ? { ...d, available: true }
+            : d
+        )
+      );
+    }
+  
+    setAvailableDriver(null);
+    setIsRequestSent(false);
+    setPrice(null);
+    setDistance(null);
+    setDuration(null);
+  };
+  
+  
   return (
     <div
       style={{
@@ -164,69 +262,118 @@ export default function Page() {
         margin: "auto",
       }}
     >
-      {/* Header Image */}
-      <div style={{ textAlign: "center" }}>
-        <img
-          src="/images/ride/um map.png" // Replace with your image URL
-          alt="Campus Ride Service"
-          style={{ width: "100%", borderRadius: "10px", marginBottom: "20px" }}
-        />
-      </div>
-
       <h1 style={{ textAlign: "center", color: "#4CAF50" }}>
         Campus Ride Service
       </h1>
-
-      {/* Pickup Location */}
-      <div style={{ marginBottom: "10px" }}>
-        <label>Pick Up: </label>
-        <select
-          value={pickUp}
-          onChange={(e) => setPickUp(e.target.value)}
-          style={{
-            padding: "5px",
-            marginLeft: "10px",
-            borderRadius: "5px",
-            border: "1px solid #ccc",
-          }}
-        >
-          <option value="">Select Location</option>
-          {locations.map((loc) => (
-            <option key={loc} value={loc}>
-              {loc}
-            </option>
-          ))}
-        </select>
+      {/* Map to Display Route */}
+      <div style={{ marginTop: "20px", height: "300px" }}>
+        {isLoaded && directionsResponse && (
+          <GoogleMap
+            center={{ lat: 3.1209692, lng: 101.6536755 }}
+            zoom={14}
+            mapContainerStyle={{ width: "100%", height: "100%" }}
+          >
+            <DirectionsRenderer directions={directionsResponse} />
+          </GoogleMap>
+        )}
       </div>
 
-      {/* Destination */}
-      <div style={{ marginBottom: "10px" }}>
-        <label>Destination: </label>
-        <select
-          value={destination}
-          onChange={(e) => setDestination(e.target.value)}
-          style={{
-            padding: "5px",
-            marginLeft: "10px",
-            borderRadius: "5px",
-            border: "1px solid #ccc",
-          }}
-        >
-          <option value="">Select Location</option>
-          {locations.map((loc) => (
-            <option key={loc} value={loc}>
-              {loc}
-            </option>
-          ))}
-        </select>
-      </div>
+      {/* Origin Input with CustomInput */}
+      {isLoaded && (
+        <div style={{ marginBottom: "10px" }}>
+          <label>Pick Up: </label>
+          <CustomInput
+            placeholder="Enter pickup location"
+            inputRef={originRef}
+            predefinedLocations={[
+              {
+                name: "KK1",
+                address:
+                  "Kolej Kediaman Pertama Universiti Malaya, Lingkungan Budi, Kuala Lumpur, Federal Territory of Kuala Lumpur, Malaysia",
+              },
+              {
+                name: "KK2",
+                address:
+                  "Kolej Kediaman Raja Dr. Nazrin Shah (KK12), Universiti Malaya, Lingkaran Wawasan, Kuala Lumpur, Federal Territory of Kuala Lumpur, Malaysia",
+              },
+              {
+                name: "KK3",
+                address:
+                  "Kolej Kediaman Ketiga, Kuala Lumpur, Federal Territory of Kuala Lumpur, Malaysia",
+              },
+            ]}
+          />
+        </div>
+      )}
+
+      {/* Destination Input with CustomInput */}
+      {isLoaded && (
+        <div style={{ marginBottom: "10px" }}>
+          <label>Destination: </label>
+          <CustomInput
+            placeholder="Enter destination location"
+            inputRef={destinationRef}
+            predefinedLocations={[
+              {
+                name: "KK1",
+                address:
+                  "Kolej Kediaman Pertama Universiti Malaya, Lingkungan Budi, Kuala Lumpur, Federal Territory of Kuala Lumpur, Malaysia",
+              },
+              {
+                name: "KK2",
+                address:
+                  "Kolej Kediaman Raja Dr. Nazrin Shah (KK12), Universiti Malaya, Lingkaran Wawasan, Kuala Lumpur, Federal Territory of Kuala Lumpur, Malaysia",
+              },
+              {
+                name: "KK3",
+                address:
+                  "Kolej Kediaman Ketiga, Kuala Lumpur, Federal Territory of Kuala Lumpur, Malaysia",
+              },
+            ]}
+          />
+        </div>
+      )}
+
+      {/* Calculate Route Button
+      <button
+        onClick={calculateRoute}
+        style={{
+          padding: "10px 20px",
+          backgroundColor: "#4CAF50",
+          color: "#fff",
+          border: "none",
+          borderRadius: "5px",
+          cursor: "pointer",
+          display: "block",
+          margin: "10px auto",
+        }}
+      >
+        Calculate Route
+      </button> */}
+
+      {/* Display Distance, Duration, and Price
+      {distance && duration && (
+        <div style={{ marginTop: "20px", textAlign: "center" }}>
+          <p>
+            <strong>Distance:</strong> {distance}
+          </p>
+          <p>
+            <strong>Duration:</strong> {duration}
+          </p>
+          {price !== null && (
+            <p>
+              <strong>Estimated Price:</strong> RM {price.toFixed(2)}
+            </p>
+          )}
+        </div>
+      )} */}
 
       {/* Number of Passengers */}
       <div style={{ marginBottom: "10px" }}>
         <label>Passengers: </label>
         <select
-          value={passengers}
-          onChange={(e) => setPassengers(Number(e.target.value))}
+          value={numberOfPassengers}
+          onChange={(e) => setNumberOfPassengers(Number(e.target.value))}
           style={{
             padding: "5px",
             marginLeft: "10px",
@@ -243,72 +390,98 @@ export default function Page() {
       </div>
 
       {/* Request Button */}
-      <button
-        onClick={handleRequest}
-        style={{
-          padding: "10px 20px",
-          backgroundColor: "#4CAF50",
-          color: "#fff",
-          border: "none",
-          borderRadius: "5px",
-          cursor: "pointer",
-          display: "block",
-          margin: "10px auto",
-        }}
-      >
-        Request Ride
-      </button>
+      {!isRequestSent && (
+        <button
+          onClick={handleRequest}
+          style={{
+            padding: "10px 20px",
+            backgroundColor: "#4CAF50",
+            color: "#fff",
+            border: "none",
+            borderRadius: "5px",
+            cursor: "pointer",
+            display: "block",
+            margin: "10px auto",
+          }}
+        >
+          Request Ride
+        </button>
+      )}
 
       {/* Error Message */}
       {errorMessage && (
-        <p style={{ color: "red", textAlign: "center", margin: "10px 0" }}>
-          {errorMessage}
-        </p>
+        <p style={{ color: "red", textAlign: "center", margin: "10px 0" }}>{errorMessage}</p>
       )}
 
       {/* Results Section */}
-      <div style={{ marginTop: "20px" }}>
-        {fee !== null && (
-          <>
-            <p style={{ fontSize: "16px", margin: "10px 0" }}>
-              <strong>Distance:</strong> {distance.toFixed(2)} km
-            </p>
-            <p style={{ fontSize: "16px", margin: "10px 0" }}>
-              <strong>Estimated Fee:</strong> RM {fee.toFixed(2)}
-            </p>
-          </>
-        )}
-        {availableDriver ? (
-          <div style={{ fontSize: "16px", margin: "10px 0" }}>
-            <p>
-              <strong>Available Driver:</strong> {availableDriver.name} <br />
-              <strong>Phone:</strong> {availableDriver.phone}
-            </p>
-            <a
-              href={`https://t.me/${availableDriver.telegram}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                display: "inline-block",
-                padding: "10px 20px",
-                backgroundColor: "#0088cc",
-                color: "#fff",
-                textDecoration: "none",
-                borderRadius: "5px",
-                marginTop: "10px",
-              }}
-            >
-              Chat on Telegram
-            </a>
-          </div>
-        ) : (
-          !errorMessage && (
-            <p style={{ fontSize: "16px", margin: "10px 0" }}>
-              No drivers available
-            </p>
-          )
-        )}
+      {distance && duration && (
+       <div style={{ marginTop: "20px", textAlign: "center" }}>
+         {/* Display Distance and Duration */}
+         <div style={{ marginBottom: "10px" }}>
+         <p style={{ margin: "5px 0" }}>
+           <strong>Distance:</strong> {distance}
+         </p>
+      <p style={{ margin: "5px 0" }}>
+        <strong>Duration:</strong> {duration}
+      </p>
+      {price !== null && (
+        <p style={{ margin: "5px 0" }}>
+          <strong>Estimated Price:</strong> RM {price.toFixed(2)}
+        </p>
+      )}
+    </div>
+
+    {/* Driver Information */}
+    {availableDriver ? (
+      <div>
+        <p style={{ margin: "5px 0" }}>
+          <strong>Driver:</strong> {availableDriver.name} <br />
+          <strong>Phone:</strong> {availableDriver.phone} <br />
+          <strong>Plate Number:</strong> {availableDriver.plateNo} <br />
+          <strong>Vehicle Type:</strong> {availableDriver.type} <br />
+        </p>
+
+        {/* Action Buttons */}
+        <div style={{ marginTop: "10px" }}>
+          {/* Chat on Telegram Button */}
+          <a
+            href={`https://t.me/${availableDriver.telegram}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: "inline-block",
+              padding: "10px 20px",
+              backgroundColor: "#0088cc",
+              color: "#fff",
+              textDecoration: "none",
+              borderRadius: "5px",
+              marginRight: "10px",
+            }}
+          >
+            Chat on Telegram
+          </a>
+
+          {/* Cancel Order Button */}
+          <button
+            onClick={handleCancel}
+            style={{
+              padding: "10px 20px",
+              backgroundColor: "#f44336",
+              color: "#fff",
+              border: "none",
+              borderRadius: "5px",
+              cursor: "pointer",
+            }}
+          >
+            Cancel Order
+          </button>
+        </div>
       </div>
+    ) : (
+      <p style={{ marginTop: "10px", color: "#555" }}>No drivers available.</p>
+    )}
+  </div>
+)}
     </div>
   );
 }

@@ -131,12 +131,12 @@ export type Bus = {
 }[];
 
 export const UM_BUSES: Bus = [
-  { name: "Route AB", link: "/" },
+  { name: "Route AB", link: "/busum/route/route-ab" },
   { name: "Route BA", link: "/busum/route/route-ba" },
   { name: "Route C", link: "/busum/route/route-c" },
   { name: "Route College 13", link: "/busum/route/route-college-13" },
   { name: "Route D", link: "/busum/route/route-d" },
-  { name: "Route E", link: "/busum/route/route-e" },
+  { name: "Route E", link: "/busum/route/route-e" },
 ];
 
 export const RAPID_KL_BUSES: Bus = [
